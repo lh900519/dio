@@ -29,6 +29,8 @@ dio 是一个强大的 HTTP 网络请求库，支持全局配置、Restful API�
       * [QueuedInterceptor](#queuedinterceptor)
         * [例子](#例子)
       * [日志拦截器](#日志拦截器)
+      * [Dart](#dart)
+      * [Flutter](#flutter)
     * [自定义拦截器](#自定义拦截器)
   * [错误处理](#错误处理)
     * [DioException](#dioexception)
@@ -54,24 +56,13 @@ dio 是一个强大的 HTTP 网络请求库，支持全局配置、Restful API�
 
 ### 添加依赖
 
-你可以使用以下命令将 dio 的最新稳定版依赖添加至你的项目：
-
-```console
-$ dart pub add dio
-```
-
-你也可以手动将 dio 添加至 pubspec.yaml：
-
-```yaml
-dependencies:
-  dio: ^替换为最新版本
-```
-
-最新稳定版本为：![Pub](https://img.shields.io/pub/v/dio.svg)
-最新包含开发版的版本为：![Pub](https://img.shields.io/pub/v/dio?include_prereleases)
+依照文档将 `dio` 包添加为
+[pubspec 的依赖](https://pub.flutter-io.cn/packages/dio/install)。
 
 **在你更新之前：大版本和次要版本可能会包含不兼容的重大改动。<br/>
 请阅读 [迁移指南][] 了解完整的重大变更内容。**
+
+[迁移指南]: https://pub.flutter-io.cn/documentation/dio/latest/topics/Migration%20Guide-topic.html
 
 ## 一个极简的示例
 
@@ -93,19 +84,20 @@ void getHttp() async {
 ### 相关插件
 
 <!-- 使用 https://pub.flutter-io.cn 作为管理网址 -->
-| 仓库                                                                                                     | 最新版本                                                                                                                                   | 描述                                                 |
-|--------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|
-| [dio_cookie_manager](https://github.com/cfug/dio/blob/main/plugins/cookie_manager)                     | [![Pub](https://img.shields.io/pub/v/dio_cookie_manager.svg)](https://pub.flutter-io.cn/packages/dio_cookie_manager)                   | Cookie 管理                                          |
-| [dio_http2_adapter](https://github.com/cfug/dio/blob/main/plugins/http2_adapter)                       | [![Pub](https://img.shields.io/pub/v/dio_http2_adapter.svg)](https://pub.flutter-io.cn/packages/dio_http2_adapter)                     | 支持 HTTP/2 的自定义适配器                                  |
-| [native_dio_adapter](https://github.com/cfug/dio/blob/main/plugins/native_dio_adapter)                 | [![Pub](https://img.shields.io/pub/v/native_dio_adapter.svg)](https://pub.flutter-io.cn/packages/native_dio_adapter)                   | 使用 cupertino_http 和 cronet_http 以适配器代理实现的原生网络请求功能。 |
-| [dio_smart_retry](https://github.com/rodion-m/dio_smart_retry)                                         | [![Pub](https://img.shields.io/pub/v/dio_smart_retry.svg)](https://pub.flutter-io.cn/packages/dio_smart_retry)                         | 支持灵活地请求重试                                          |
-| [http_certificate_pinning](https://github.com/diefferson/http_certificate_pinning)                     | [![Pub](https://img.shields.io/pub/v/http_certificate_pinning.svg)](https://pub.flutter-io.cn/packages/http_certificate_pinning)       | 用于 Flutter 的 HTTPS 证书锁定                            |
-| [dio_intercept_to_curl](https://github.com/blackflamedigital/dio_intercept_to_curl)                   | [![Pub](https://img.shields.io/pub/v/dio_intercept_to_curl.svg)](https://pub.flutter-io.cn/packages/dio_intercept_to_curl) | 用于 Flutter 的 CURL 命令生成器                            |
-| [dio_cache_interceptor](https://github.com/llfbandit/dio_cache_interceptor)                            | [![Pub](https://img.shields.io/pub/v/dio_cache_interceptor.svg)](https://pub.flutter-io.cn/packages/dio_cache_interceptor)             | 具有多个符合 HTTP 指令的 HTTP 缓存拦截器，                        |
-| [dio_http_cache](https://github.com/hurshi/dio-http-cache)                                             | [![Pub](https://img.shields.io/pub/v/dio_http_cache.svg)](https://pub.flutter-io.cn/packages/dio_http_cache)                           | 类似 Android 中的 RxCache 的缓存管理                        |
-| [pretty_dio_logger](https://github.com/Milad-Akarie/pretty_dio_logger)                                 | [![Pub](https://img.shields.io/pub/v/pretty_dio_logger.svg)](https://pub.flutter-io.cn/packages/pretty_dio_logger)                     | 基于拦截器的简明易读的请求日志打印                                  |
-| [dio_image_provider](https://github.com/ueman/image_provider)                                          | [![Pub](https://img.shields.io/pub/v/dio_image_provider.svg)](https://pub.flutter-io.cn/packages/dio_image_provider)                   | 基于 Dio 的图片加载                                       |
-| [flutter_ume_kit_dio](https://github.com/cfug/flutter_ume_kits/tree/main/packages/flutter_ume_kit_dio) | [![Pub](https://img.shields.io/pub/v/flutter_ume_kit_dio.svg)](https://pub.flutter-io.cn/packages/flutter_ume_kit_dio)                 | flutter_ume 上的 dio 调试插件                            |
+| 仓库                                                                                                     | 最新版本                                                                                                                             | 描述                                                 |
+|--------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| [dio_cookie_manager](https://github.com/cfug/dio/blob/main/plugins/cookie_manager)                     | [![Pub](https://img.shields.io/pub/v/dio_cookie_manager.svg)](https://pub.flutter-io.cn/packages/dio_cookie_manager)             | Cookie 管理                                          |
+| [dio_http2_adapter](https://github.com/cfug/dio/blob/main/plugins/http2_adapter)                       | [![Pub](https://img.shields.io/pub/v/dio_http2_adapter.svg)](https://pub.flutter-io.cn/packages/dio_http2_adapter)               | 支持 HTTP/2 的自定义适配器                                  |
+| [native_dio_adapter](https://github.com/cfug/dio/blob/main/plugins/native_dio_adapter)                 | [![Pub](https://img.shields.io/pub/v/native_dio_adapter.svg)](https://pub.flutter-io.cn/packages/native_dio_adapter)             | 使用 cupertino_http 和 cronet_http 以适配器代理实现的原生网络请求功能。 |
+| [dio_smart_retry](https://github.com/rodion-m/dio_smart_retry)                                         | [![Pub](https://img.shields.io/pub/v/dio_smart_retry.svg)](https://pub.flutter-io.cn/packages/dio_smart_retry)                   | 支持灵活地请求重试                                          |
+| [http_certificate_pinning](https://github.com/diefferson/http_certificate_pinning)                     | [![Pub](https://img.shields.io/pub/v/http_certificate_pinning.svg)](https://pub.flutter-io.cn/packages/http_certificate_pinning) | 用于 Flutter 的 HTTPS 证书锁定                            |
+| [dio_intercept_to_curl](https://github.com/blackflamedigital/dio_intercept_to_curl)                    | [![Pub](https://img.shields.io/pub/v/dio_intercept_to_curl.svg)](https://pub.flutter-io.cn/packages/dio_intercept_to_curl)       | 用于 Flutter 的 CURL 命令生成器                            |
+| [dio_cache_interceptor](https://github.com/llfbandit/dio_cache_interceptor)                            | [![Pub](https://img.shields.io/pub/v/dio_cache_interceptor.svg)](https://pub.flutter-io.cn/packages/dio_cache_interceptor)       | 具有多个符合 HTTP 指令的 HTTP 缓存拦截器，                        |
+| [dio_http_cache](https://github.com/hurshi/dio-http-cache)                                             | [![Pub](https://img.shields.io/pub/v/dio_http_cache.svg)](https://pub.flutter-io.cn/packages/dio_http_cache)                     | 类似 Android 中的 RxCache 的缓存管理                        |
+| [pretty_dio_logger](https://github.com/Milad-Akarie/pretty_dio_logger)                                 | [![Pub](https://img.shields.io/pub/v/pretty_dio_logger.svg)](https://pub.flutter-io.cn/packages/pretty_dio_logger)               | 基于拦截器的简明易读的请求日志打印                                  |
+| [dio_image_provider](https://github.com/ueman/image_provider)                                          | [![Pub](https://img.shields.io/pub/v/dio_image_provider.svg)](https://pub.flutter-io.cn/packages/dio_image_provider)             | 基于 Dio 的图片加载                                       |
+| [flutter_ume_kit_dio](https://github.com/cfug/flutter_ume_kits/tree/main/packages/flutter_ume_kit_dio) | [![Pub](https://img.shields.io/pub/v/flutter_ume_kit_dio.svg)](https://pub.flutter-io.cn/packages/flutter_ume_kit_dio)           | flutter_ume 上的 dio 调试插件                            |
+| [talker_dio_logger](https://github.com/Frezyx/talker/tree/master/packages/talker_dio_logger)           | [![Pub](https://img.shields.io/pub/v/talker_dio_logger.svg)](https://pub.flutter-io.cn/packages/talker_dio_logger)               | 基于 talker 的轻量级和可定制的 dio 记录器                        |
 
 ### 相关的项目
 
@@ -482,15 +474,39 @@ print(response.data); // 'fake data'
 
 #### 日志拦截器
 
-我们可以添加 `LogInterceptor` 拦截器来自动打印请求、响应日志：
+我们可以添加 `LogInterceptor` 拦截器来自动打印请求和响应等日志：
+
+**注意：** `LogInterceptor` 应该保持最后一个被添加到拦截器中，
+否则在它之后进行处理的拦截器修改的内容将无法体现。
+
+#### Dart
 
 ```dart
 dio.interceptors.add(LogInterceptor(responseBody: false)); // 不输出响应内容体
 ```
 
-**注意：** 由于拦截器队列是先进先出，`LogInterceptor` 应当在最后添加至 `Dio` 实例。
+**注意：** 默认的 `logPrint` 只会在 DEBUG 模式（启用了断言）
+的情况下输出日志。
 
-**注意：** 日志默认仅在 DEBUG 模式（启用了断言）下打印。
+你也可以使用 `dart:developer` 中的 `log` 来输出日志（在 Flutter 中也可以使用）。
+
+#### Flutter
+
+在 Flutter 中你应该使用 `debugPrint` 来打印日志。
+
+这样也会让调试日志能够通过 `flutter logs` 获取到。
+
+**注意：** `debugPrint` 的意义 **不是只在 DEBUG 模式下打印**，
+而是对输出内容进行节流，从而保证输出完整。
+请不要在生产模式使用，除非你有意输出相关日志。
+
+```dart
+dio.interceptors.add(
+  LogInterceptor(
+    logPrint: (o) => debugPrint(o.toString()),
+  ),
+);
+```
 
 ### 自定义拦截器
 
@@ -676,7 +692,7 @@ void main() {
 我们通过 `HttpClientAdapter` 将 `Dio` 和 `HttpClient` 解耦，
 这样一来便可以自由定制 HTTP 请求的底层实现。
 Dio 使用 `IOHttpClientAdapter` 作为原生平台默认的桥梁，
-`BrowserClientAdapter` 作为 Web 平台的桥梁。
+`BrowserHttpClientAdapter` 作为 Web 平台的桥梁。
 你可以通过 `HttpClientAdapter()` 来根据平台创建它们。
 
 ```dart
@@ -688,13 +704,13 @@ dio.httpClientAdapter = HttpClientAdapter();
   ```dart
   import 'package:dio/browser.dart';
   // ...
-  dio.httpClientAdapter = BrowserClientAdapter();
+  dio.httpClientAdapter = BrowserHttpClientAdapter();
   ```
 - 对于原生平台：
   ```dart
   import 'package:dio/io.dart';
   // ...
-  dio.httpClientAdapter = IOClientAdapter();
+  dio.httpClientAdapter = IOHttpClientAdapter();
   ```
 
 [示例](../example/lib/adapter.dart) 中包含了一个简单的自定义桥接。
@@ -870,6 +886,5 @@ class MyDio with DioMixin implements Dio {
 
 你可以参考简单请求的定义修改你的请求，或者为你的服务加上 CORS 中间件进行跨域处理。
 
-[迁移指南]: ./migration_guide.md
 [简单请求]: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82
 [CORS 预检]: https://developer.mozilla.org/zh-CN/docs/Glossary/Preflight_request

@@ -16,11 +16,10 @@ Timeout, Custom adapters, Transformers, etc.
 <!-- TOC -->
 * [dio](#dio)
   * [Get started](#get-started)
-    * [Add dependency](#add-dependency)
+    * [Install](#install)
     * [Super simple to use](#super-simple-to-use)
   * [Awesome dio](#awesome-dio)
     * [Plugins](#plugins)
-    * [Related Projects](#related-projects)
   * [Examples](#examples)
   * [Dio APIs](#dio-apis)
     * [Creating an instance and set default configs.](#creating-an-instance-and-set-default-configs)
@@ -31,6 +30,8 @@ Timeout, Custom adapters, Transformers, etc.
       * [QueuedInterceptor](#queuedinterceptor)
         * [Example](#example)
       * [LogInterceptor](#loginterceptor)
+      * [Dart](#dart)
+      * [Flutter](#flutter)
       * [Custom Interceptor](#custom-interceptor)
   * [Handling Errors](#handling-errors)
     * [DioException](#dioexception)
@@ -54,26 +55,15 @@ Timeout, Custom adapters, Transformers, etc.
 
 ## Get started
 
-### Add dependency
+### Install
 
-You can use the command to add dio as a dependency with the latest stable version:
-
-```console
-$ dart pub add dio
-```
-
-Or you can manually add dio into the dependencies section in your pubspec.yaml:
-
-```yaml
-dependencies:
-  dio: ^replace-with-latest-version
-```
-
-The latest version is: ![Pub](https://img.shields.io/pub/v/dio.svg)
-The latest version including pre-releases is: ![Pub](https://img.shields.io/pub/v/dio?include_prereleases)
+Add the `dio` package to your
+[pubspec dependencies](https://pub.dev/packages/dio/install).
 
 **Before you upgrade: Breaking changes might happen in major and minor versions of packages.<br/>
 See the [Migration Guide][] for the complete breaking changes list.**
+
+[Migration Guide]: https://pub.dev/documentation/dio/latest/topics/Migration%20Guide-topic.html
 
 ### Super simple to use
 
@@ -94,22 +84,7 @@ void getHttp() async {
 
 ### Plugins
 
-<!-- Use https://pub.dev for the hosted URL. -->
-| Repository                                                                                             | Status                                                                                                                       | Description                                                                                                            |
-|--------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| [dio_cookie_manager](https://github.com/cfug/dio/blob/main/plugins/cookie_manager)                     | [![Pub](https://img.shields.io/pub/v/dio_cookie_manager.svg)](https://pub.dev/packages/dio_cookie_manager)                   | A cookie manager for Dio                                                                                               |
-| [dio_http2_adapter](https://github.com/cfug/dio/blob/main/plugins/http2_adapter)                       | [![Pub](https://img.shields.io/pub/v/dio_http2_adapter.svg)](https://pub.dev/packages/dio_http2_adapter)                     | A Dio HttpClientAdapter which support Http/2.0                                                                         |
-| [native_dio_adapter](https://github.com/cfug/dio/blob/main/plugins/native_dio_adapter)                 | [![Pub](https://img.shields.io/pub/v/native_dio_adapter.svg)](https://pub.dev/packages/native_dio_adapter)                   | An adapter for Dio which makes use of cupertino_http and cronet_http to delegate HTTP requests to the native platform. |
-| [dio_smart_retry](https://github.com/rodion-m/dio_smart_retry)                                         | [![Pub](https://img.shields.io/pub/v/dio_smart_retry.svg)](https://pub.dev/packages/dio_smart_retry)                         | Flexible retry library for Dio                                                                                         |
-| [http_certificate_pinning](https://github.com/diefferson/http_certificate_pinning)                     | [![Pub](https://img.shields.io/pub/v/http_certificate_pinning.svg)](https://pub.dev/packages/http_certificate_pinning)       | Https Certificate pinning for Flutter                                                                                  |
-| [dio_intercept_to_curl](https://github.com/blackflamedigital/dio_intercept_to_curl)                   | [![Pub](https://img.shields.io/pub/v/dio_intercept_to_curl.svg)](https://pub.dev/packages/dio_intercept_to_curl) | A Flutter curl-command generator for Dio.                                                                              |
-| [dio_cache_interceptor](https://github.com/llfbandit/dio_cache_interceptor)                            | [![Pub](https://img.shields.io/pub/v/dio_cache_interceptor.svg)](https://pub.dev/packages/dio_cache_interceptor)             | Dio HTTP cache interceptor with multiple stores respecting HTTP directives (or not)                                    |
-| [dio_http_cache](https://github.com/hurshi/dio-http-cache)                                             | [![Pub](https://img.shields.io/pub/v/dio_http_cache.svg)](https://pub.dev/packages/dio_http_cache)                           | A simple cache library for Dio like Rxcache in Android                                                                 |
-| [pretty_dio_logger](https://github.com/Milad-Akarie/pretty_dio_logger)                                 | [![Pub](https://img.shields.io/pub/v/pretty_dio_logger.svg)](https://pub.dev/packages/pretty_dio_logger)                     | Pretty Dio logger is a Dio interceptor that logs network calls in a pretty, easy to read format.                       |
-| [dio_image_provider](https://github.com/ueman/image_provider)                                          | [![Pub](https://img.shields.io/pub/v/dio_image_provider.svg)](https://pub.dev/packages/dio_image_provider)                   | An image provider which makes use of package:dio to instead of dart:io                                                 |
-| [flutter_ume_kit_dio](https://github.com/cfug/flutter_ume_kits/tree/main/packages/flutter_ume_kit_dio) | [![Pub](https://img.shields.io/pub/v/flutter_ume_kit_dio.svg)](https://pub.dev/packages/flutter_ume_kit_dio)                 | A debug kit of dio on flutter_ume                                                                                      |
-
-### Related Projects
+[Plugins](https://pub.dev/documentation/dio/latest/topics/Plugins-topic.html)
 
 Welcome to submit third-party plugins and related libraries
 in [here](https://github.com/cfug/dio/issues/347).
@@ -512,15 +487,39 @@ For the complete code see [here](../example/lib/queued_interceptor_crsftoken.dar
 
 #### LogInterceptor
 
-You can apply the `LogInterceptor` to log requests and responses automatically in the DEBUG mode:
+You can apply the `LogInterceptor` to log requests and responses automatically.
+
+**Note:** `LogInterceptor` should always be the last interceptor added,
+otherwise modifications by following interceptors will not be logged.
+
+#### Dart
 
 ```dart
 dio.interceptors.add(LogInterceptor(responseBody: false)); // Do not output responses body.
 ```
 
-**Note:** `LogInterceptor` should be the last to add since the interceptors are FIFO.
+**Note:** When using the default `logPrint` function, logs will only be printed
+in DEBUG mode (when the assertion is enabled).
 
-**Note:** Logs will only be printed in the DEBUG mode (when the assertion is enabled).
+Alternatively `dart:developer`'s log can also be used to log messages (available in Flutter too).
+
+#### Flutter
+
+When using Flutter, Flutters own `debugPrint` function should be used.
+
+This ensures, that debug messages are also available via `flutter logs`.
+
+**Note:** `debugPrint` **does not mean print logs under the DEBUG mode**,
+it's a throttled function which helps to print full logs without truncation.
+Do not use it under any production environment unless you're intended to.
+
+```dart
+dio.interceptors.add(
+  LogInterceptor(
+    logPrint: (o) => debugPrint(o.toString()),
+  ),
+);
+```
 
 #### Custom Interceptor
 
@@ -605,7 +604,7 @@ and it supports uploading files.
 final formData = FormData.fromMap({
   'name': 'dio',
   'date': DateTime.now().toIso8601String(),
-  'file': await MultipartFile.fromFile('./text.txt',filename: 'upload.txt'),
+  'file': await MultipartFile.fromFile('./text.txt', filename: 'upload.txt'),
 });
 final response = await dio.post('/info', data: formData);
 ```
@@ -718,7 +717,7 @@ There is an example for [customizing Transformer](../example/lib/transformer.dar
 We can use any `HttpClient` not just `dart:io:HttpClient` to make HTTP requests.
 And all we need is providing a `HttpClientAdapter`.
 The default `HttpClientAdapter` for Dio is `IOHttpClientAdapter` on native platforms,
-and `BrowserClientAdapter` on the Web platform.
+and `BrowserHttpClientAdapter` on the Web platform.
 They can be initiated by calling the `HttpClientAdapter()`.
 
 ```dart
@@ -730,13 +729,13 @@ If you want to use platform adapters explicitly:
   ```dart
   import 'package:dio/browser.dart';
   // ...
-  dio.httpClientAdapter = BrowserClientAdapter();
+  dio.httpClientAdapter = BrowserHttpClientAdapter();
   ```
 - For native platforms:
   ```dart
   import 'package:dio/io.dart';
   // ...
-  dio.httpClientAdapter = IOClientAdapter();
+  dio.httpClientAdapter = IOHttpClientAdapter();
   ```
 
 [Here](../example/lib/adapter.dart) is a simple example to custom adapter. 
@@ -923,6 +922,5 @@ and a server is aware using specific methods and headers.
 You can modify your requests to match the definition of simple request,
 or add a CORS middleware for your service to handle CORS requests.
 
-[Migration Guide]: ./migration_guide.md
 [simple request]: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests
 [CORS preflight request]: https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request

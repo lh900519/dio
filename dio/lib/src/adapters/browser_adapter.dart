@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'dart:typed_data';
-import 'dart:developer' as dev;
 
 import 'package:meta/meta.dart';
 
@@ -10,13 +9,7 @@ import '../adapter.dart';
 import '../dio_exception.dart';
 import '../headers.dart';
 import '../options.dart';
-
-// For the web platform, an inline `bool.fromEnvironment` translates to
-// `core.bool.fromEnvironment` instead of correctly being replaced by the
-// constant value found in the environment at build time.
-//
-// See https://github.com/flutter/flutter/issues/51186.
-const _kReleaseMode = bool.fromEnvironment('dart.vm.product');
+import '../utils.dart';
 
 HttpClientAdapter createAdapter() => BrowserHttpClientAdapter();
 
@@ -116,39 +109,65 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
       );
     }
 
-    final uploadStopwatch = Stopwatch();
-    xhr.upload.onProgress.listen((event) {
-      // This event will only be triggered if a request body exists.
+    // This code is structured to call `xhr.upload.onProgress.listen` only when
+    // absolutely necessary, because registering an xhr upload listener prevents
+    // the request from being classified as a "simple request" by the CORS spec.
+    // Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests
+    // Upload progress events only get triggered if the request body exists,
+    // so we can check it beforehand.
+    if (requestStream != null) {
       if (connectTimeoutTimer != null) {
-        connectTimeoutTimer!.cancel();
-        connectTimeoutTimer = null;
+        xhr.upload.onProgress.listen((event) {
+          connectTimeoutTimer?.cancel();
+          connectTimeoutTimer = null;
+        });
       }
 
       final sendTimeout = options.sendTimeout;
       if (sendTimeout != null) {
-        if (!uploadStopwatch.isRunning) {
-          uploadStopwatch.start();
-        }
+        final uploadStopwatch = Stopwatch();
+        xhr.upload.onProgress.listen((event) {
+          if (!uploadStopwatch.isRunning) {
+            uploadStopwatch.start();
+          }
 
-        final duration = uploadStopwatch.elapsed;
-        if (duration > sendTimeout) {
-          uploadStopwatch.stop();
-          completer.completeError(
-            DioException.sendTimeout(
-              timeout: sendTimeout,
-              requestOptions: options,
-            ),
-            StackTrace.current,
-          );
-          xhr.abort();
-        }
+          final duration = uploadStopwatch.elapsed;
+          if (duration > sendTimeout) {
+            uploadStopwatch.stop();
+            completer.completeError(
+              DioException.sendTimeout(
+                timeout: sendTimeout,
+                requestOptions: options,
+              ),
+              StackTrace.current,
+            );
+            xhr.abort();
+          }
+        });
       }
-      if (options.onSendProgress != null &&
-          event.loaded != null &&
-          event.total != null) {
-        options.onSendProgress!(event.loaded!, event.total!);
+
+      final onSendProgress = options.onSendProgress;
+      if (onSendProgress != null) {
+        xhr.upload.onProgress.listen((event) {
+          if (event.loaded != null && event.total != null) {
+            onSendProgress(event.loaded!, event.total!);
+          }
+        });
       }
-    });
+    } else {
+      if (options.sendTimeout != null) {
+        debugLog(
+          'sendTimeout cannot be used without a request body to send',
+          StackTrace.current,
+        );
+      }
+      if (options.onSendProgress != null) {
+        debugLog(
+          'onSendProgress cannot be used without a request body to send',
+          StackTrace.current,
+        );
+      }
+    }
 
     final downloadStopwatch = Stopwatch();
     xhr.onProgress.listen((event) {
@@ -159,8 +178,8 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
 
       final receiveTimeout = options.receiveTimeout;
       if (receiveTimeout != null) {
-        if (!uploadStopwatch.isRunning) {
-          uploadStopwatch.start();
+        if (!downloadStopwatch.isRunning) {
+          downloadStopwatch.start();
         }
 
         final duration = downloadStopwatch.elapsed;
@@ -232,13 +251,11 @@ class BrowserHttpClientAdapter implements HttpClientAdapter {
     });
 
     if (requestStream != null) {
-      if (!_kReleaseMode && options.method == 'GET') {
-        dev.log(
+      if (options.method == 'GET') {
+        debugLog(
           'GET request with a body data are not support on the '
           'web platform. Use POST/PUT instead.',
-          level: 900,
-          name: '🔔 Dio',
-          stackTrace: StackTrace.current,
+          StackTrace.current,
         );
       }
       final completer = Completer<Uint8List>();
